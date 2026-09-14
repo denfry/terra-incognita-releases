@@ -1,11 +1,11 @@
 {
-  "version": "1.0.0",
-  "notes": "First public build: offline play on the dev channel",
-  "pub_date": "2026-09-14T07:57:15Z",
+  "version": "1.0.1",
+  "notes": "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430 \u043f\u0435\u0440\u0435\u0436\u0438\u0432\u0430\u0435\u0442 \u0441\u0431\u043e\u0438 GitHub, \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0443 \u043c\u043e\u0436\u043d\u043e \u043e\u0442\u043c\u0435\u043d\u0438\u0442\u044c, \u043d\u043e\u0432\u044b\u0439 \u0433\u043b\u0430\u0432\u043d\u044b\u0439 \u044d\u043a\u0440\u0430\u043d \u0438 \u043f\u043b\u0430\u0448\u043a\u0430 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f \u043b\u0430\u0443\u043d\u0447\u0435\u0440\u0430.",
+  "pub_date": "2026-09-14T10:53:41Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRMGZlSzU2UmNNSTIvVEdUVVhlVnhDRTNwd3hRYTJ3cC9EMm96OXhpMXZ6V1o3YVdybFVqeTE1Z1JmSlNmTFduMm9obXVNK29lVy83MFd0b0pzNjJjR3EydFpJL2RQQVFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg5MzcyNjI5CWZpbGU6VGVycmEgTGF1bmNoZXJfMS4wLjBfeDY0LXNldHVwLmV4ZQpCWjdaVWs0aW1lbmlKejFSY21MUmxmdWlOK0V5MzhucUFYcnpjTUlhNGZrWWVrb3g0VnZCaWRkM1pyMjB2Ni9RRGFOaldLYTBDM1ZNMG9ETU9HNWxBdz09Cg==",
-      "url": "https://github.com/denfry/terra-incognita-releases/releases/download/launcher-v1.0.0/TerraLauncher-1.0.0-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRMGZlSzU2UmNNSTYzM1ROTDlYVFBJZlBoMEtUbkFNTTJqQ1hhUDN3MVNWRmgxNmlyWDBXNWlwK29QZEFGTldKWHRiUkFyRlc4bGJ1QmpZOElrZFFnTUpWVXVyeGZWMGdzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg5MzgzMjE3CWZpbGU6VGVycmEgTGF1bmNoZXJfMS4wLjFfeDY0LXNldHVwLmV4ZQpOZlEwOUpKOVgwTFc4UHRmbzIzazlNU2I1WDF3alptdytQYmdPd3pQU0dxY1oyNVZlbk1qWm0zQ0pScSs0YnFDTHdvMU9MQWZ6bnBtbFM3R0JoUW9Cdz09Cg==",
+      "url": "https://github.com/denfry/terra-incognita-releases/releases/download/launcher-v1.0.1/TerraLauncher-1.0.1-setup.exe"
     }
   }
 }
