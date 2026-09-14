@@ -1,0 +1,46 @@
+{
+  "format": 1,
+  "product": "terra-incognita",
+  "version": 1,
+  "published_at": "2026-09-14T07:26:21Z",
+  "expires_at": "2029-09-13T07:26:21Z",
+  "keys": {
+    "50EDB5596D7EB36E": {
+      "public_key": "RWRus35tWbXtUPbrlqk6zs1xJt5ZlssKoGvE1qw9nE13Voax3nJrOECl",
+      "holder": ""
+    },
+    "C0F479A7C0A78139": {
+      "public_key": "RWQ5gafAp3n0wLBx9dAKthtqq0vw2Rvhw17ofGHPQDuKLVOH10kD1MrR",
+      "holder": ""
+    },
+    "DDAF07757B03129B": {
+      "public_key": "RWSbEgN7dQev3aNhCIc5dtqHK/mWloVpmSN3eAW6XQ4kiP0YDjVh2e2p",
+      "holder": ""
+    },
+    "DEF46A226674F3B4": {
+      "public_key": "RWS083RmImr03sr3VNxXC6QVxaSxzIArqU6QFr/ug81cN93AJL90eLJ0",
+      "holder": ""
+    },
+    "E6D8F59E098C4E1C": {
+      "public_key": "RWQcTowJnvXY5iSRD8Czp4yqpx7imh2hyuRmzzzzeHyH8Brb8qZVVwUG",
+      "holder": ""
+    }
+  },
+  "roles": {
+    "root": [
+      "DEF46A226674F3B4"
+    ],
+    "stable": [
+      "50EDB5596D7EB36E"
+    ],
+    "beta": [
+      "C0F479A7C0A78139"
+    ],
+    "dev": [
+      "E6D8F59E098C4E1C"
+    ],
+    "timestamp": [
+      "DDAF07757B03129B"
+    ]
+  }
+}
