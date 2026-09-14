@@ -1,11 +1,11 @@
 {
-  "version": "1.0.2",
-  "notes": "Lite graphics preset for integrated graphics and 8 GB machines; JVM options per preset; Particle Core.",
-  "pub_date": "2026-09-14T12:21:16Z",
+  "version": "1.0.3",
+  "notes": "Fixes the launcher asking for a stable channel that is not published yet.",
+  "pub_date": "2026-09-14T13:00:06Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRMGZlSzU2UmNNSS9SQ01NbFljZVRvdlQxSHlaaGhZRnVHRnN1aG5zdFRDTnFtMVpobXpmZXUzMk5WQUtDdDZXNnBYSnhrdTlWM2J6VjF4MU9tSzIxM2FRRlp6dUtkUkFZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg5Mzg4NDcwCWZpbGU6VGVycmEgTGF1bmNoZXJfMS4wLjJfeDY0LXNldHVwLmV4ZQpnUnlSSzRFUEpCWWZ3Zi9kL0ZKRUpPQnY4NjE1bGZPSkIwSkJhdDNUYWxKTlJZQlBvWDM3a2xid2RvK0hRL1E4ekxRVFFrWTk2Nm1Zb2dTMTYyM3NEdz09Cg==",
-      "url": "https://github.com/denfry/terra-incognita-releases/releases/download/launcher-v1.0.2/TerraLauncher-1.0.2-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRMGZlSzU2UmNNSTFrakcwZmtobHdhN0thSlBOTVhkd3hqVW1NQzNpdXBjdVo4SFc5ZU5PeTlScDhHdnJ4QUF3U2pERjh3NDNrTGdjSFAyUkxaWFR0enJSckNoVk5VNlFVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg5MzkwNzk5CWZpbGU6VGVycmEgTGF1bmNoZXJfMS4wLjNfeDY0LXNldHVwLmV4ZQpaNDdxTGNtR2dWeUxoZGtpSlRGOTd1WDVkcXpOWTQ3cmY0dDZzM25vZmJLdUlwMVdMNUw4OGlldXNaOHhXU3lKaFFaR0ovMFUvU2lBVW02cnZjVnpDZz09Cg==",
+      "url": "https://github.com/denfry/terra-incognita-releases/releases/download/launcher-v1.0.3/TerraLauncher-1.0.3-setup.exe"
     }
   }
 }
