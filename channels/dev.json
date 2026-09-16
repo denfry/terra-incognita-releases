@@ -7,6 +7,6 @@
   "manifest": "manifests/dev/2-1.0.0-rc.1.json",
   "manifest_sha256": "1f4156e687c9f577888c843574ff2674814c872b2529bedec60942dca536b429",
   "manifest_size": 911377,
-  "published_at": "2026-09-14T12:37:30Z",
-  "expires_at": "2026-09-21T12:37:30Z"
+  "published_at": "2026-09-16T08:39:32Z",
+  "expires_at": "2026-09-23T08:39:32Z"
 }
