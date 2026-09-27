@@ -1,30 +1,493 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru" data-lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Terra: Incognita releases</title>
+<title>Terra: Incognita</title>
+<meta name="description" content="Terra: Incognita — сборка для Minecraft 1.21.1 на TerraFirmaCraft, где мир нужно исследовать: виды безымянны, пока их не определят, а карта рисуется из собственной съёмки.">
+<meta property="og:title" content="Terra: Incognita">
+<meta property="og:description" content="Выживание на TerraFirmaCraft, где мир нужно исследовать, а не открывать по списку.">
+<meta property="og:image" content="assets/shots/meadow.jpg">
+<link rel="icon" type="image/png" href="assets/atlas/icon-camp.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  body { margin: 0; padding: 2rem 1rem; font: 16px/1.5 Georgia, serif; color: #2b2419; background: #f4efe6; }
-  main { max-width: 40rem; margin: 0 auto; }
-  h1 { font-weight: normal; letter-spacing: .02em; }
-  a { color: #7a4a1e; }
-  code { font-size: .9em; }
-  hr { border: 0; border-top: 1px solid #d9cdb8; margin: 2rem 0; }
+  :root {
+    --fog: #26302f;
+    --fog-deep: #1d2524;
+    --hatch: #33403e;
+    --chalk: #d8d2c0;
+    --chalk-dim: #a9a592;
+    --paper: #e6dcc3;
+    --ink: #1f1a14;
+    --ochre: #d4a13a;
+    --ochre-deep: #b0801f;
+    --lichen: #9fb07a;
+    --measure: 40rem;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--fog-deep); }
+  body {
+    margin: 0;
+    color: var(--chalk);
+    background: var(--fog-deep);
+    font: 400 1.1875rem/1.6 "Alegreya", Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  html[data-lang="ru"] .en, html[data-lang="en"] .ru { display: none !important; }
+  a { color: var(--ochre); text-underline-offset: .18em; }
+  a:hover { color: #e6b95a; }
+  :focus-visible { outline: 3px solid var(--ochre); outline-offset: 3px; border-radius: 2px; }
+
+  /* ---- the unsurveyed land ---------------------------------------------------------------- */
+  .survey {
+    position: relative;
+    height: min(92vh, 60rem);
+    min-height: 34rem;
+    overflow: hidden;
+    background: var(--fog);
+    cursor: crosshair;
+    touch-action: pan-y;
+  }
+  .survey canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .reckoning {
+    position: absolute; top: 1.1rem; left: 1.25rem;
+    font: 500 1rem/1.3 "Alegreya Sans", system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+    color: #b8f07a;
+    text-shadow: 0 1px 0 rgba(0,0,0,.6);
+    pointer-events: none;
+  }
+  .reckoning small { display: block; color: var(--chalk-dim); font-weight: 400; }
+  .langs {
+    position: absolute; top: 1rem; right: 1.25rem; display: flex; gap: .25rem;
+    font: 500 .95rem "Alegreya Sans", system-ui, sans-serif;
+  }
+  .langs button {
+    font: inherit; color: var(--chalk); background: rgba(29,37,36,.75);
+    border: 1px solid var(--hatch); padding: .3rem .65rem; cursor: pointer; border-radius: 3px;
+  }
+  .langs button[aria-pressed="true"] { color: var(--ink); background: var(--chalk); border-color: var(--chalk); }
+
+  .cartouche {
+    position: absolute; left: clamp(1rem, 4vw, 3.5rem); bottom: clamp(1rem, 6vh, 3.5rem);
+    max-width: min(36rem, calc(100% - 2rem));
+    padding: 1.6rem 1.8rem 1.5rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid #b9ab88;
+    outline: 5px double #8c7d5c; outline-offset: -11px;
+    box-shadow: 0 18px 40px rgba(0,0,0,.45);
+    cursor: auto;
+  }
+  .cartouche h1 {
+    margin: .1rem 0 .5rem;
+    font-weight: 500;
+    font-size: clamp(2.5rem, 6vw, 4.25rem);
+    line-height: 1;
+    letter-spacing: .01em;
+  }
+  .cartouche p { margin: 0 0 1.2rem; max-width: 30rem; font-size: 1.15rem; line-height: 1.5; }
+  .cta { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.1rem; }
+  .download {
+    display: inline-block; text-decoration: none;
+    font: 700 1.05rem/1 "Alegreya Sans", system-ui, sans-serif;
+    color: var(--ink); background: var(--ochre);
+    padding: .95rem 1.35rem; border-radius: 3px;
+    border: 1px solid var(--ochre-deep);
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,.18);
+  }
+  .download:hover { background: #e2b24d; color: var(--ink); }
+  .cta .note { font: 400 .95rem/1.4 "Alegreya Sans", system-ui, sans-serif; color: #5b5140; }
+  .hint {
+    position: absolute; right: 1.25rem; bottom: 1.1rem;
+    font: italic 400 1.05rem "Alegreya", serif; color: var(--chalk-dim);
+    pointer-events: none;
+  }
+
+  /* ---- the pages below ------------------------------------------------------------------- */
+  main { padding: 0 1rem; }
+  section { max-width: 62rem; margin: 0 auto; padding: 5rem 0 1rem; }
+  h2 {
+    font-weight: 500; font-size: clamp(1.9rem, 3.4vw, 2.5rem); line-height: 1.15;
+    margin: 0 0 .6rem; color: var(--paper);
+  }
+  .lead { max-width: var(--measure); color: var(--chalk-dim); margin: 0 0 2.5rem; }
+
+  .legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6rem 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); }
+  .legend li { display: grid; grid-template-columns: 2.5rem 1fr; gap: .9rem; align-items: start; }
+  .legend img { width: 2.5rem; height: 2.5rem; image-rendering: pixelated; margin-top: .15rem; }
+  .legend h3 { margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--paper); }
+  .legend p { margin: .15rem 0 0; color: var(--chalk-dim); line-height: 1.5; }
+
+  .shots { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+  figure { margin: 0; }
+  figure img { width: 100%; height: auto; display: block; border: 1px solid var(--hatch);
+    image-rendering: auto; background: #111; }
+  figcaption { margin-top: .55rem; font-style: italic; color: var(--chalk-dim); font-size: 1.02rem; line-height: 1.45; }
+  .shots figure:first-child { grid-column: 1 / -1; }
+
+  .start { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 17rem); gap: 2rem 3rem; align-items: start; }
+  .start img { width: 100%; height: auto; image-rendering: pixelated; filter: drop-shadow(0 14px 18px rgba(0,0,0,.45)); }
+  @media (max-width: 760px) { .start { grid-template-columns: 1fr; } .start img { max-width: 14rem; justify-self: center; order: -1; } }
+  .steps { list-style: none; counter-reset: step; margin: 0; padding: 0; max-width: var(--measure); }
+  .steps li { counter-increment: step; position: relative; padding: 0 0 1.4rem 3.2rem; }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 0; top: -.1rem;
+    width: 2.1rem; height: 2.1rem; display: grid; place-items: center;
+    font: 700 1.05rem "Alegreya Sans", sans-serif; color: var(--ink);
+    background: var(--lichen); border-radius: 50%;
+  }
+  .steps h3 { margin: 0; font-size: 1.2rem; color: var(--paper); }
+  .steps p { margin: .2rem 0 0; color: var(--chalk-dim); }
+  .needs { max-width: var(--measure); margin-top: 1.4rem; padding: 1rem 1.2rem;
+    border-left: 3px solid var(--ochre); background: rgba(38,48,47,.6); color: var(--chalk-dim); }
+  .needs strong { color: var(--paper); font-weight: 500; }
+
+  footer { max-width: 62rem; margin: 5rem auto 0; padding: 2rem 1rem 3rem; border-top: 1px solid var(--hatch);
+    color: var(--chalk-dim); font-size: 1rem; line-height: 1.55; }
+  footer p { margin: 0 0 .6rem; max-width: var(--measure); }
+
+  @media (max-width: 640px) {
+    body { font-size: 1.0625rem; }
+    .survey { height: 88vh; min-height: 30rem; }
+    .cartouche { padding: 1.3rem 1.3rem 1.2rem; outline-offset: -9px; }
+    .cartouche p { font-size: 1.05rem; }
+    .hint { display: none; }
+    section { padding-top: 3.5rem; }
+  }
 </style>
 </head>
 <body>
+<header class="survey" id="survey">
+  <canvas id="map" aria-hidden="true"></canvas>
+  <div class="reckoning" id="reckoning" aria-hidden="true">~ 0, 0 (±0 м)<small>по ориентиру</small></div>
+  <div class="langs" role="group" aria-label="Язык / Language">
+    <button type="button" data-set-lang="ru" aria-pressed="true">RU</button>
+    <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+  </div>
+  <div class="cartouche">
+    <h1>Terra: Incognita</h1>
+    <p class="ru">Выживание на TerraFirmaCraft, где мир нужно исследовать, а не открывать по списку.
+      Виды безымянны, пока вы их не определите, а карта знает только то, что вы сами измерили.</p>
+    <p class="en">A TerraFirmaCraft survival pack where the world is something you investigate, not a list you unlock.
+      Species stay nameless until you identify them, and your map shows only what you measured yourself.</p>
+    <div class="cta">
+      <a class="download" id="download" href="https://github.com/denfry/terra-incognita-releases/releases?q=launcher&amp;expanded=true">
+        <span class="ru">Скачать Terra Launcher</span><span class="en">Download Terra Launcher</span></a>
+      <span class="note" id="download-note"><span class="ru">Windows 10 или 11, 64 бита</span><span class="en">Windows 10 or 11, 64-bit</span></span>
+    </div>
+  </div>
+  <p class="hint"><span class="ru">Ведите курсором: местность проявляется там, где вы прошли</span><span class="en">Move the pointer: the land appears where you have been</span></p>
+</header>
+
 <main>
-  <h1>Terra: Incognita</h1>
-  <p>This page is the mirror Terra Launcher reads. Players want the
-     <a href="https://github.com/denfry/terra-incognita-releases/releases?q=launcher&amp;expanded=true">launcher installer</a>
-     and the <a href="https://github.com/denfry/terra-incognita-releases#play">instructions</a>.</p>
-  <p>What lives here: <code>root/</code> (trust root), <code>channels/</code> (channel pointers),
-     <code>manifests/</code> (signed release manifests), <code>launcher/</code> (launcher update announcements).</p>
-  <hr>
-  <p lang="ru">Эта страница — зеркало, которое читает Terra Launcher. Игрокам нужен
-     <a href="https://github.com/denfry/terra-incognita-releases/releases?q=launcher&amp;expanded=true">установщик лаунчера</a>
-     и <a href="https://github.com/denfry/terra-incognita-releases#русский">инструкция</a>.</p>
+  <section aria-labelledby="inside">
+    <h2 id="inside"><span class="ru">Что вас ждёт</span><span class="en">What you will find</span></h2>
+    <p class="lead"><span class="ru">Сборка для Minecraft 1.21.1 на NeoForge: TerraFirmaCraft и восемнадцать собственных модулей, которые связывают природу, знание и людей в одну систему.</span><span class="en">A Minecraft 1.21.1 pack on NeoForge: TerraFirmaCraft and eighteen modules of our own that tie nature, knowledge and people into one system.</span></p>
+    <ul class="legend">
+      <li><img src="assets/atlas/icon-species_record.png" alt="">
+        <div><h3><span class="ru">Безымянные виды</span><span class="en">Nameless species</span></h3>
+        <p class="ru">Растения и звери поначалу неизвестны. Вы наблюдаете, берёте образец и определяете его в лаборатории, а первый, кто внесёт вид в реестр Общества, остаётся в его истории.</p>
+        <p class="en">Plants and animals start out unknown. You observe, take a specimen and identify it at a bench, and whoever enters a species in the Society's register first stays in its history.</p></div></li>
+      <li><img src="assets/atlas/icon-triangulation_point.png" alt="">
+        <div><h3><span class="ru">Карта из собственной съёмки</span><span class="en">Maps from your own survey</span></h3>
+        <p class="ru">Никакой миникарты. Лист рисуется за чертёжным столом из того, что вы прошли и измерили компасом, теодолитом, буссолью. Реки получают имена тех, кто их нанёс.</p>
+        <p class="en">No minimap. A sheet is drawn at a drawing table from what you walked and measured with compass, theodolite and surveying compass. Rivers take the names of those who charted them.</p></div></li>
+      <li><img src="assets/atlas/icon-outcrop.png" alt="">
+        <div><h3><span class="ru">Земля, которая помнит</span><span class="en">Ground that remembers</span></h3>
+        <p class="ru">Почва помнит, что с ней делали. Леса растут, горят от молний в засуху и зарастают по порядку. Весной реки разливаются и оставляют на пойме ил.</p>
+        <p class="en">Soil remembers what was done to it. Forests grow, burn in dry-season lightning and come back in order. Rivers flood in spring and leave silt on their plains.</p></div></li>
+      <li><img src="assets/atlas/icon-settlement.png" alt="">
+        <div><h3><span class="ru">Города игроков</span><span class="en">Players' towns</span></h3>
+        <p class="ru">Ратуша, грамоты, казна и сбор с граждан. Свой монетный двор чеканит серебро с гербом города, на площади идёт торговля, по дорогам ходят караваны.</p>
+        <p class="en">A town hall, charters, a treasury and a levy on citizens. Your own mint strikes silver with the town's arms, the square trades, and caravans travel the roads.</p></div></li>
+      <li><img src="assets/atlas/icon-danger.png" alt="">
+        <div><h3><span class="ru">Война по правилам</span><span class="en">War with rules</span></h3>
+        <p class="ru">Ультиматум, окно войны и реликвия вместо разорения. Вассалы платят дань и поднимают восстания; архив врага можно вскрыть ради копий, но не сжечь.</p>
+        <p class="en">An ultimatum, a war window and a relic instead of griefing. Vassals pay tribute and rise; an enemy archive can be raided for copies, never burned.</p></div></li>
+      <li><img src="assets/atlas/icon-sample_site.png" alt="">
+        <div><h3><span class="ru">Наука вместо очков</span><span class="en">Science, not points</span></h3>
+        <p class="ru">Гипотезы с интервалами, долгие ряды наблюдений, телескоп и альманах. Знание живёт в книгах и библиотеках, его можно скопировать и потерять.</p>
+        <p class="en">Hypotheses with intervals, long observation series, a telescope and an almanac. Knowledge lives in books and libraries; it can be copied and it can be lost.</p></div></li>
+      <li><img src="assets/atlas/icon-case.png" alt="">
+        <div><h3><span class="ru">Раны и болезни</span><span class="en">Wounds and illness</span></h3>
+        <p class="ru">Переломы, заражение, дизентерия от грязной воды. Грязная рана видна на теле, а лекарь записывает в тетрадь, что дал и чем кончилось.</p>
+        <p class="en">Fractures, infection, dysentery from foul water. A dirty wound shows on the body, and a healer writes down what was given and how it ended.</p></div></li>
+      <li><img src="assets/atlas/icon-ford.png" alt="">
+        <div><h3><span class="ru">Моря и реки</span><span class="en">Seas and rivers</span></h3>
+        <p class="ru">Броды и пороги, пресная рыба в реках, давление и кессонная болезнь в глубине, водолазный шлем и батисфера на лебёдке.</p>
+        <p class="en">Fords and rapids, freshwater fish in rivers, pressure and the bends in the deep, a diving helmet and a bathysphere on a winch.</p></div></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="seen">
+    <h2 id="seen"><span class="ru">Как это выглядит</span><span class="en">What it looks like</span></h2>
+    <p class="lead"><span class="ru">Кадры из собранной сборки, без правок.</span><span class="en">Frames from the assembled pack, untouched.</span></p>
+    <div class="shots">
+      <figure><img src="assets/shots/meadow.jpg" width="854" height="480" loading="lazy" alt="Луг в первый день: цветущий кипрей, в руке книга, в углу координаты по счислению">
+        <figcaption><span class="ru">Первый день. Координаты в углу не точные, а по счислению: вы знаете, где вы, ровно настолько, насколько считали шаги.</span><span class="en">Day one. The coordinates in the corner are dead reckoning: you know where you are only as well as you counted your steps.</span></figcaption></figure>
+      <figure><img src="assets/shots/drawing-table.jpg" width="854" height="480" loading="lazy" alt="Чертёжный стол в мастерской и сообщение о начерченной полевой карте">
+        <figcaption><span class="ru">Чертёжный стол: полевая карта с покрытием в один процент. Остальное ещё предстоит обойти.</span><span class="en">The drawing table: a field map at one per cent coverage. The rest is still to be walked.</span></figcaption></figure>
+      <figure><img src="assets/shots/atlas.jpg" width="640" height="480" loading="lazy" alt="Атлас: своя съёмка, роза севера, вкладки масштабов">
+        <figcaption><span class="ru">Атлас: только то, что вы сами видели, с розой севера и точностью съёмки.</span><span class="en">The atlas: only what you have seen, with a north rose and the survey's accuracy.</span></figcaption></figure>
+      <figure><img src="assets/shots/town.jpg" width="640" height="480" loading="lazy" alt="Страница города: глава, казна, сбор с граждан, кнопки вкладок">
+        <figcaption><span class="ru">Страница города: грамоты, казна, налоги и сбор с граждан, всё на месте в ратуше.</span><span class="en">A town's page: charters, the treasury, the market tax and the citizens' levy, read at the town hall.</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="start">
+    <h2 id="start"><span class="ru">Как начать</span><span class="en">How to start</span></h2>
+    <p class="lead"><span class="ru">Лаунчер сам ставит Java, Minecraft, NeoForge и сборку и потом обновляет её.</span><span class="en">The launcher installs Java, Minecraft, NeoForge and the pack itself, and keeps them up to date.</span></p>
+    <div class="start">
+    <div>
+    <ol class="steps">
+      <li><h3><span class="ru">Скачайте установщик</span><span class="en">Download the installer</span></h3>
+        <p><span class="ru">Файл <em>TerraLauncher-…-setup.exe</em> на <a href="https://github.com/denfry/terra-incognita-releases/releases?q=launcher&amp;expanded=true">странице релизов</a>. Рядом лежит контрольная сумма.</span><span class="en">The <em>TerraLauncher-…-setup.exe</em> file on the <a href="https://github.com/denfry/terra-incognita-releases/releases?q=launcher&amp;expanded=true">releases page</a>, with its checksum next to it.</span></p></li>
+      <li><h3><span class="ru">Запустите его</span><span class="en">Run it</span></h3>
+        <p><span class="ru">Установщик пока не подписан сертификатом, поэтому Windows покажет «Система Windows защитила ваш компьютер». Нажмите «Подробнее», затем «Выполнить в любом случае».</span><span class="en">The installer is not signed yet, so Windows says “Windows protected your PC”. Click More info, then Run anyway.</span></p></li>
+      <li><h3><span class="ru">Введите имя и нажмите «Играть»</span><span class="en">Type a name and press Play</span></h3>
+        <p><span class="ru">Первый запуск скачает около полутора гигабайт. В игре вы получите «Полевые заметки» и четыре книги, которые объясняют первые дни.</span><span class="en">The first start downloads about 1.5 GB. In game you get the Field Notes and four primers that explain the first days.</span></p></li>
+    </ol>
+    <div class="needs"><span class="ru"><strong>Что нужно:</strong> Windows 10 или 11, 64 бита; 8 ГБ памяти (игре отдаётся 6 ГБ); около 4 ГБ на диске. Вход через Microsoft появится в одной из следующих версий лаунчера, пока игра идёт под введённым именем.</span><span class="en"><strong>You need:</strong> Windows 10 or 11, 64-bit; 8 GB of memory (the game gets 6 GB); about 4 GB of disk. Microsoft sign-in arrives in a later launcher version; for now you play under the name you type.</span></div>
+    </div>
+    <img src="assets/drawing-table.png" width="560" height="558" loading="lazy" alt="Чертёжный стол из сборки: на столешнице карта с рекой, линейка и чернильница">
+    </div>
+  </section>
 </main>
+
+<footer>
+  <p><span class="ru">Terra: Incognita, версия 1.0.0-rc.1, кандидат в релиз. Minecraft 1.21.1, NeoForge 21.1.249, TerraFirmaCraft 4.2.9.</span><span class="en">Terra: Incognita, version 1.0.0-rc.1, release candidate. Minecraft 1.21.1, NeoForge 21.1.249, TerraFirmaCraft 4.2.9.</span></p>
+  <p><span class="ru">Сборка стоит на плечах TerraFirmaCraft и полутора сотен других модов; их авторы и лицензии перечислены в книге «Благодарности» на титульном экране игры.</span><span class="en">The pack stands on TerraFirmaCraft and some 150 other mods; their authors and licences are listed under Credits on the game's title screen.</span></p>
+  <p><a href="https://github.com/denfry/terra-incognita-releases/releases"><span class="ru">Все релизы</span><span class="en">All releases</span></a></p>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const root = document.documentElement;
+
+  // ---- language -----------------------------------------------------------------------------
+  const setLang = (lang) => {
+    root.dataset.lang = lang;
+    root.lang = lang;
+    document.querySelectorAll("[data-set-lang]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.setLang === lang)));
+    try { localStorage.setItem("ti-lang", lang); } catch (e) { /* private mode: the choice lasts the visit */ }
+    updateReadout();
+    if (land.length) draw();
+  };
+  let saved = null;
+  try { saved = localStorage.getItem("ti-lang"); } catch (e) { saved = null; }
+  const initial = saved || ((navigator.language || "ru").toLowerCase().startsWith("ru") ? "ru" : "en");
+  document.querySelectorAll("[data-set-lang]").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.setLang)));
+
+  // ---- the newest launcher, straight from the releases --------------------------------------
+  fetch("https://api.github.com/repos/denfry/terra-incognita-releases/releases?per_page=20")
+    .then((r) => (r.ok ? r.json() : []))
+    .then((releases) => {
+      const launcher = releases.find((r) => /^launcher-v/.test(r.tag_name) && !r.prerelease && !r.draft);
+      if (!launcher) return;
+      const exe = (launcher.assets || []).find((a) => /setup\.exe$/i.test(a.name));
+      if (exe) document.getElementById("download").href = exe.browser_download_url;
+      const version = launcher.tag_name.replace(/^launcher-v/, "");
+      const mb = exe ? Math.round(exe.size / 1048576) : null;
+      document.getElementById("download-note").innerHTML =
+        `<span class="ru">Версия ${version}${mb ? `, ${mb} МБ` : ""}. Windows 10 или 11, 64 бита</span>` +
+        `<span class="en">Version ${version}${mb ? `, ${mb} MB` : ""}. Windows 10 or 11, 64-bit</span>`;
+    })
+    .catch(() => { /* the button already points at the releases page */ });
+
+  // ---- the map under the fog ----------------------------------------------------------------
+  const survey = document.getElementById("survey");
+  const canvas = document.getElementById("map");
+  const ctx = canvas.getContext("2d");
+  const reckoning = document.getElementById("reckoning");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const TILE = 32, BLOCKS_PER_TILE = 16;
+  const names = ["grass", "water", "rock", "sand", "marsh", "clay", "snow"];
+  const images = {};
+  const load = (key, src) => new Promise((ok) => { const i = new Image(); i.onload = () => { images[key] = i; ok(); }; i.onerror = ok; i.src = src; });
+  const icons = ["settlement", "camp", "peak", "waterfall", "ford", "well", "signpost", "species_record", "mineral_discovery", "outcrop"];
+  const loading = [
+    ...names.map((n) => load("ground-" + n, `assets/atlas/ground-${n}.png`)),
+    load("relief-hills", "assets/atlas/relief-hills.png"), load("relief-mountain", "assets/atlas/relief-mountain.png"),
+    load("cover-forest", "assets/atlas/cover-forest.png"), load("cover-sparse", "assets/atlas/cover-sparse.png"),
+    ...icons.map((n) => load("icon-" + n, `assets/atlas/icon-${n}.png`)),
+  ];
+
+  // A small seeded value noise: the same land every visit.
+  const hash = (x, y, s) => { let h = (x * 374761393 + y * 668265263 + s * 982451653) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
+  const smooth = (t) => t * t * (3 - 2 * t);
+  const noise = (x, y, s) => {
+    const xi = Math.floor(x), yi = Math.floor(y), xf = smooth(x - xi), yf = smooth(y - yi);
+    const a = hash(xi, yi, s), b = hash(xi + 1, yi, s), c = hash(xi, yi + 1, s), d = hash(xi + 1, yi + 1, s);
+    return a + (b - a) * xf + (c - a) * yf + (a - b - c + d) * xf * yf;
+  };
+  const fbm = (x, y, s) => noise(x, y, s) * 0.55 + noise(x * 2.1, y * 2.1, s + 7) * 0.3 + noise(x * 4.3, y * 4.3, s + 13) * 0.15;
+
+  let cols = 0, rows = 0, dpr = 1, land = [], marks = [], river = [], fog, fogCtx, origin = { x: 0, y: 0 };
+  let last = null, drift = 0, readoutState = { x: 438, z: 118, err: 1, landmark: true };
+
+  function build() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = survey.clientWidth, h = survey.clientHeight;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    cols = Math.ceil(w / TILE) + 1; rows = Math.ceil(h / TILE) + 1;
+    origin = { x: Math.floor(cols * 0.62), y: Math.floor(rows * 0.42) };
+    land = [];
+    for (let y = 0; y < rows; y++) {
+      const row = [];
+      for (let x = 0; x < cols; x++) {
+        const height = fbm(x / 9, y / 9, 3) + (x / cols) * 0.18;
+        const wet = fbm(x / 7 + 40, y / 7, 11);
+        let ground = "grass", relief = null, cover = null;
+        if (height < 0.36) ground = "water";
+        else if (height < 0.39) ground = wet > 0.55 ? "marsh" : "sand";
+        else if (height > 0.78) { ground = "snow"; relief = "mountain"; }
+        else if (height > 0.68) { ground = "rock"; relief = "mountain"; }
+        else if (height > 0.6) { ground = wet < 0.4 ? "clay" : "grass"; relief = "hills"; }
+        else if (wet > 0.58) cover = "forest";
+        else if (wet > 0.48) cover = "sparse";
+        row.push({ ground, relief, cover, height });
+      }
+      land.push(row);
+    }
+    // A river from the high ground down to the lowest water, drawn as the atlas draws it.
+    river = [];
+    let cx = Math.floor(cols * 0.78), cy = 0;
+    for (let y = 0; y < rows; y++) {
+      cx += Math.round((noise(y / 3, 5, 21) - 0.5) * 2.2);
+      cx = Math.max(1, Math.min(cols - 2, cx));
+      river.push([cx, y]);
+      if (land[y] && land[y][cx]) { land[y][cx].ground = "water"; land[y][cx].relief = null; land[y][cx].cover = null; }
+    }
+    const pick = (fx, fy) => [Math.max(1, Math.min(cols - 2, Math.round(cols * fx))), Math.max(1, Math.min(rows - 2, Math.round(rows * fy)))];
+    const ford = river[Math.floor(rows * 0.55)] || [cols - 3, rows - 3];
+    marks = [
+      { icon: "camp", at: [origin.x, origin.y] },
+      { icon: "settlement", at: [Math.max(1, ford[0] - 3), ford[1]], label: "Проверочный" },
+      { icon: "ford", at: ford },
+      { icon: "peak", at: pick(0.9, 0.12) },
+      { icon: "waterfall", at: river[Math.floor(rows * 0.25)] || pick(0.8, 0.25) },
+      { icon: "well", at: pick(0.44, 0.7) },
+      { icon: "signpost", at: pick(0.55, 0.52) },
+      { icon: "species_record", at: pick(0.3, 0.35) },
+      { icon: "mineral_discovery", at: pick(0.72, 0.8) },
+      { icon: "outcrop", at: pick(0.2, 0.62) },
+    ];
+    fog = document.createElement("canvas");
+    fog.width = canvas.width; fog.height = canvas.height;
+    fogCtx = fog.getContext("2d");
+    fogCtx.fillStyle = "#26302f";
+    fogCtx.fillRect(0, 0, fog.width, fog.height);
+    fogCtx.strokeStyle = "rgba(64, 80, 77, 0.55)";
+    fogCtx.lineWidth = 1 * dpr;
+    for (let d = -fog.height; d < fog.width; d += 14 * dpr) {
+      fogCtx.beginPath(); fogCtx.moveTo(d, fog.height); fogCtx.lineTo(d + fog.height, 0); fogCtx.stroke();
+    }
+    reveal(origin.x * TILE + TILE / 2, origin.y * TILE + TILE / 2, 150, 1);
+  }
+
+  function reveal(px, py, radius, strength) {
+    const x = px * dpr, y = py * dpr, r = radius * dpr;
+    const g = fogCtx.createRadialGradient(x, y, r * 0.35, x, y, r);
+    g.addColorStop(0, `rgba(0,0,0,${strength})`);
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    fogCtx.globalCompositeOperation = "destination-out";
+    fogCtx.fillStyle = g;
+    fogCtx.beginPath(); fogCtx.arc(x, y, r, 0, Math.PI * 2); fogCtx.fill();
+    fogCtx.globalCompositeOperation = "source-over";
+  }
+
+  function draw() {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = "#e6dcc3";
+    ctx.fillRect(0, 0, cols * TILE, rows * TILE);
+    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+      const t = land[y][x];
+      const g = images["ground-" + t.ground];
+      if (g) ctx.drawImage(g, x * TILE, y * TILE, TILE, TILE);
+      if (t.cover && images["cover-" + t.cover]) ctx.drawImage(images["cover-" + t.cover], x * TILE, y * TILE, TILE, TILE);
+      if (t.relief && images["relief-" + t.relief]) ctx.drawImage(images["relief-" + t.relief], x * TILE, y * TILE, TILE, TILE);
+    }
+    // The river's name, lettered in italic as the atlas letters it.
+    const bend = river[Math.floor(rows * 0.4)];
+    if (bend) {
+      ctx.font = "italic 500 17px Alegreya, Georgia, serif";
+      ctx.fillStyle = "#2c5a8a";
+      ctx.strokeStyle = "rgba(230, 220, 195, 0.9)";
+      ctx.lineWidth = 4;
+      const label = root.dataset.lang === "en" ? "the Ryzhaya" : "р. Рыжая";
+      ctx.strokeText(label, bend[0] * TILE + TILE + 4, bend[1] * TILE + 20);
+      ctx.fillText(label, bend[0] * TILE + TILE + 4, bend[1] * TILE + 20);
+    }
+    for (const m of marks) {
+      const i = images["icon-" + m.icon];
+      if (i) ctx.drawImage(i, m.at[0] * TILE, m.at[1] * TILE, TILE, TILE);
+    }
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.drawImage(fog, 0, 0);
+  }
+
+  function nearLandmark(tx, ty) {
+    return marks.some((m) => Math.abs(m.at[0] - tx) <= 1 && Math.abs(m.at[1] - ty) <= 1);
+  }
+
+  function updateReadout() {
+    const ru = root.dataset.lang !== "en";
+    const s = readoutState;
+    const how = s.landmark ? (ru ? "по ориентиру" : "by landmark") : (ru ? "по счислению" : "dead reckoning");
+    reckoning.innerHTML = `~ ${s.x}, ${s.z} (±${s.err} ${ru ? "м" : "m"})<small>${how}</small>`;
+  }
+
+  function onMove(clientX, clientY) {
+    const r = survey.getBoundingClientRect();
+    const px = clientX - r.left, py = clientY - r.top;
+    if (last) drift += Math.hypot(px - last.x, py - last.y) / TILE;
+    last = { x: px, y: py };
+    const tx = Math.floor(px / TILE), ty = Math.floor(py / TILE);
+    const landmark = nearLandmark(tx, ty);
+    if (landmark) drift = 0;
+    readoutState = {
+      x: (tx - origin.x) * BLOCKS_PER_TILE + 438,
+      z: (ty - origin.y) * BLOCKS_PER_TILE + 118,
+      err: Math.min(99, 1 + Math.round(drift * 0.6)),
+      landmark,
+    };
+    updateReadout();
+    reveal(px, py, 72, 0.9);
+    requestAnimationFrame(draw);
+  }
+
+  survey.addEventListener("pointermove", (e) => { if (!e.target.closest(".cartouche, .langs")) onMove(e.clientX, e.clientY); });
+  survey.addEventListener("pointerdown", (e) => { if (!e.target.closest(".cartouche, .langs")) onMove(e.clientX, e.clientY); });
+
+  // One orchestrated moment: the surveyor walks out of camp towards the river, then the page is yours.
+  function walkOut() {
+    const start = { x: origin.x * TILE + TILE / 2, y: origin.y * TILE + TILE / 2 };
+    const ford = marks.find((m) => m.icon === "ford");
+    const end = ford ? { x: ford.at[0] * TILE + TILE / 2, y: ford.at[1] * TILE + TILE / 2 } : start;
+    if (reduceMotion) { reveal(end.x, end.y, 90, 1); draw(); return; }
+    const t0 = performance.now(), duration = 1600;
+    const step = (now) => {
+      const t = Math.min(1, (now - t0) / duration), e = 1 - Math.pow(1 - t, 3);
+      const x = start.x + (end.x - start.x) * e, y = start.y + (end.y - start.y) * e + Math.sin(e * Math.PI) * -40;
+      reveal(x, y, 85, 0.9);
+      draw();
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  let resizeTimer = null;
+  window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { build(); draw(); }, 150); });
+
+  setLang(initial);
+  Promise.all(loading).then(() => (document.fonts ? document.fonts.ready : null)).then(() => { build(); draw(); walkOut(); });
+})();
+</script>
 </body>
 </html>
