@@ -69,6 +69,9 @@
     border: 1px solid var(--hatch); padding: .3rem .65rem; cursor: pointer; border-radius: 3px;
   }
   .langs button[aria-pressed="true"] { color: var(--ink); background: var(--chalk); border-color: var(--chalk); }
+  .langs a { font: inherit; color: var(--chalk); background: rgba(29,37,36,.75); border: 1px solid var(--hatch);
+    padding: .3rem .65rem; border-radius: 3px; text-decoration: none; margin-right: .5rem; }
+  .langs a:hover { color: var(--paper); border-color: var(--chalk-dim); }
 
   .cartouche {
     position: absolute; left: clamp(1rem, 4vw, 3.5rem); bottom: clamp(1rem, 6vh, 3.5rem);
@@ -166,6 +169,7 @@
   <canvas id="map" aria-hidden="true"></canvas>
   <div class="reckoning" id="reckoning" aria-hidden="true">~ 0, 0 (±0 м)<small>по ориентиру</small></div>
   <div class="langs" role="group" aria-label="Язык / Language">
+    <a href="wiki.html"><span class="ru">Справочник</span><span class="en">Handbook</span></a>
     <button type="button" data-set-lang="ru" aria-pressed="true">RU</button>
     <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
   </div>
@@ -187,7 +191,7 @@
 <main>
   <section aria-labelledby="inside">
     <h2 id="inside"><span class="ru">Что вас ждёт</span><span class="en">What you will find</span></h2>
-    <p class="lead"><span class="ru">Сборка для Minecraft 1.21.1 на NeoForge: TerraFirmaCraft и восемнадцать собственных модулей, которые связывают природу, знание и людей в одну систему.</span><span class="en">A Minecraft 1.21.1 pack on NeoForge: TerraFirmaCraft and eighteen modules of our own that tie nature, knowledge and people into one system.</span></p>
+    <p class="lead"><span class="ru">Сборка для Minecraft 1.21.1 на NeoForge: TerraFirmaCraft и восемнадцать собственных модулей, которые связывают природу, знание и людей в одну систему. Как всё устроено в подробностях, рассказывает <a href="wiki.html">справочник</a>.</span><span class="en">A Minecraft 1.21.1 pack on NeoForge: TerraFirmaCraft and eighteen modules of our own that tie nature, knowledge and people into one system. The <a href="wiki.html">handbook</a> explains how it all works in detail.</span></p>
     <ul class="legend">
       <li><img src="assets/atlas/icon-species_record.png" alt="">
         <div><h3><span class="ru">Безымянные виды</span><span class="en">Nameless species</span></h3>
@@ -290,7 +294,7 @@
 <footer>
   <p><span class="ru">Terra: Incognita, версия 1.0.0-rc.1, кандидат в релиз. Minecraft 1.21.1, NeoForge 21.1.249, TerraFirmaCraft 4.2.9.</span><span class="en">Terra: Incognita, version 1.0.0-rc.1, release candidate. Minecraft 1.21.1, NeoForge 21.1.249, TerraFirmaCraft 4.2.9.</span></p>
   <p><span class="ru">Сборка стоит на плечах TerraFirmaCraft и полутора сотен других модов; их авторы и лицензии перечислены в книге «Благодарности» на титульном экране игры.</span><span class="en">The pack stands on TerraFirmaCraft and some 150 other mods; their authors and licences are listed under Credits on the game's title screen.</span></p>
-  <p><a href="https://github.com/denfry/terra-incognita-releases/releases"><span class="ru">Все релизы</span><span class="en">All releases</span></a></p>
+  <p><a href="wiki.html"><span class="ru">Справочник</span><span class="en">Handbook</span></a> · <a href="https://github.com/denfry/terra-incognita-releases/releases"><span class="ru">Все релизы</span><span class="en">All releases</span></a></p>
 </footer>
 
 <script>
