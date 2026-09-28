@@ -2,11 +2,11 @@
   "format": 1,
   "product": "terra-incognita",
   "channel": "dev",
-  "sequence": 3,
-  "pack_version": "1.0.0-rc.1",
-  "manifest": "manifests/dev/3-1.0.0-rc.1.json",
-  "manifest_sha256": "7a1471b44d91ec374fe6f206c2e1a2b4106d597466273b66b8240da637440d24",
-  "manifest_size": 974533,
-  "published_at": "2026-09-28T09:52:14Z",
-  "expires_at": "2026-10-05T09:52:14Z"
+  "sequence": 4,
+  "pack_version": "1.0.0-rc.2",
+  "manifest": "manifests/dev/4-1.0.0-rc.2.json",
+  "manifest_sha256": "f7eadbddb63e001da13528b3e881751bc2a34be06384a378ad7294a33c89b975",
+  "manifest_size": 995321,
+  "published_at": "2026-09-28T13:47:23Z",
+  "expires_at": "2026-10-05T13:47:23Z"
 }
