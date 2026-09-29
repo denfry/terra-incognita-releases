@@ -5,9 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Terra: Incognita</title>
 <meta name="description" content="Terra: Incognita — сборка для Minecraft 1.21.1 на TerraFirmaCraft, где мир нужно исследовать: виды безымянны, пока их не определят, а карта рисуется из собственной съёмки.">
+<meta name="theme-color" content="#1d2524">
+<link rel="canonical" href="https://denfry.github.io/terra-incognita-releases/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://denfry.github.io/terra-incognita-releases/">
 <meta property="og:title" content="Terra: Incognita">
 <meta property="og:description" content="Выживание на TerraFirmaCraft, где мир нужно исследовать, а не открывать по списку.">
-<meta property="og:image" content="assets/shots/meadow.jpg">
+<meta property="og:image" content="https://denfry.github.io/terra-incognita-releases/assets/shots/meadow.jpg">
+<meta property="og:image:width" content="854">
+<meta property="og:image:height" content="480">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="assets/atlas/icon-camp.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,9 +32,11 @@
     --ochre-deep: #b0801f;
     --lichen: #9fb07a;
     --measure: 40rem;
+    --bar: 3.5rem;
+    --sans: "Alegreya Sans", system-ui, sans-serif;
   }
   * { box-sizing: border-box; }
-  html { background: var(--fog-deep); }
+  html { background: var(--fog-deep); scroll-padding-top: calc(var(--bar) + 1.25rem); }
   body {
     margin: 0;
     color: var(--chalk);
@@ -39,11 +48,52 @@
   a { color: var(--ochre); text-underline-offset: .18em; }
   a:hover { color: #e6b95a; }
   :focus-visible { outline: 3px solid var(--ochre); outline-offset: 3px; border-radius: 2px; }
+  .skip { position: absolute; left: -999px; top: .5rem; z-index: 30; background: var(--paper); color: var(--ink); padding: .5rem .8rem; }
+  .skip:focus { left: .5rem; }
+
+  /* ---- the bar: clear over the map, solid once the map is behind you ---------------------- */
+  .bar {
+    position: fixed; inset: 0 0 auto 0; z-index: 20; height: var(--bar);
+    display: flex; align-items: center; gap: .5rem 1.25rem; padding: 0 1.25rem;
+    font: 500 1rem/1 var(--sans);
+    border-bottom: 1px solid transparent;
+  }
+  .bar.stuck {
+    background:
+      repeating-linear-gradient(135deg, transparent 0 13px, rgba(64,80,77,.35) 13px 14px),
+      var(--fog);
+    border-bottom-color: var(--hatch);
+  }
+  .brand { font: 500 1.3rem/1 "Alegreya", serif; color: var(--paper); text-decoration: none; white-space: nowrap; }
+  .brand:hover { color: var(--paper); }
+  .bar .brand, .bar .download { visibility: hidden; opacity: 0; }
+  .bar.stuck .brand, .bar.stuck .download { visibility: visible; opacity: 1; }
+  .links { display: flex; gap: .25rem; margin-left: auto; }
+  .links a { color: var(--chalk); text-decoration: none; padding: .45rem .6rem; border-radius: 3px; white-space: nowrap; }
+  .links a:hover { color: var(--paper); background: rgba(29,37,36,.75); }
+  .langs { display: flex; gap: .25rem; }
+  .langs button {
+    font: inherit; font-size: .95rem; color: var(--chalk); background: rgba(29,37,36,.75);
+    border: 1px solid var(--hatch); padding: .35rem .65rem; cursor: pointer; border-radius: 3px;
+  }
+  .langs button[aria-pressed="true"] { color: var(--ink); background: var(--chalk); border-color: var(--chalk); }
+
+  .download {
+    display: inline-block; text-decoration: none;
+    font: 700 1.05rem/1 var(--sans);
+    color: var(--ink); background: var(--ochre);
+    padding: .95rem 1.35rem; border-radius: 3px;
+    border: 1px solid var(--ochre-deep);
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,.18);
+  }
+  .download:hover { background: #e2b24d; color: var(--ink); }
+  .bar .download { font-size: .95rem; padding: .55rem .85rem; }
 
   /* ---- the unsurveyed land ---------------------------------------------------------------- */
   .survey {
     position: relative;
     height: min(92vh, 60rem);
+    height: min(92svh, 60rem);
     min-height: 34rem;
     overflow: hidden;
     background: var(--fog);
@@ -52,26 +102,14 @@
   }
   .survey canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .reckoning {
-    position: absolute; top: 1.1rem; left: 1.25rem;
-    font: 500 1rem/1.3 "Alegreya Sans", system-ui, sans-serif;
+    position: absolute; top: calc(var(--bar) + .6rem); left: 1.25rem;
+    font: 500 1rem/1.3 var(--sans);
     font-variant-numeric: tabular-nums;
     color: #b8f07a;
     text-shadow: 0 1px 0 rgba(0,0,0,.6);
     pointer-events: none;
   }
   .reckoning small { display: block; color: var(--chalk-dim); font-weight: 400; }
-  .langs {
-    position: absolute; top: 1rem; right: 1.25rem; display: flex; gap: .25rem;
-    font: 500 .95rem "Alegreya Sans", system-ui, sans-serif;
-  }
-  .langs button {
-    font: inherit; color: var(--chalk); background: rgba(29,37,36,.75);
-    border: 1px solid var(--hatch); padding: .3rem .65rem; cursor: pointer; border-radius: 3px;
-  }
-  .langs button[aria-pressed="true"] { color: var(--ink); background: var(--chalk); border-color: var(--chalk); }
-  .langs a { font: inherit; color: var(--chalk); background: rgba(29,37,36,.75); border: 1px solid var(--hatch);
-    padding: .3rem .65rem; border-radius: 3px; text-decoration: none; margin-right: .5rem; }
-  .langs a:hover { color: var(--paper); border-color: var(--chalk-dim); }
 
   .cartouche {
     position: absolute; left: clamp(1rem, 4vw, 3.5rem); bottom: clamp(1rem, 6vh, 3.5rem);
@@ -93,55 +131,73 @@
   }
   .cartouche p { margin: 0 0 1.2rem; max-width: 30rem; font-size: 1.15rem; line-height: 1.5; }
   .cta { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.1rem; }
-  .download {
-    display: inline-block; text-decoration: none;
-    font: 700 1.05rem/1 "Alegreya Sans", system-ui, sans-serif;
-    color: var(--ink); background: var(--ochre);
-    padding: .95rem 1.35rem; border-radius: 3px;
-    border: 1px solid var(--ochre-deep);
-    box-shadow: inset 0 -3px 0 rgba(0,0,0,.18);
+  .cta .note { font: 400 .95rem/1.4 var(--sans); color: #5b5140; }
+
+  /* The sheet's margin: a scale and the way north, as on any map. */
+  .margin {
+    position: absolute; right: 1.25rem; bottom: 1.1rem; text-align: right;
+    color: var(--chalk-dim); pointer-events: none;
   }
-  .download:hover { background: #e2b24d; color: var(--ink); }
-  .cta .note { font: 400 .95rem/1.4 "Alegreya Sans", system-ui, sans-serif; color: #5b5140; }
-  .hint {
-    position: absolute; right: 1.25rem; bottom: 1.1rem;
-    font: italic 400 1.05rem "Alegreya", serif; color: var(--chalk-dim);
-    pointer-events: none;
+  .scale { display: inline-flex; align-items: flex-end; gap: .7rem; font: 500 .9rem/1 var(--sans); font-variant-numeric: tabular-nums; }
+  .scale svg { width: 1rem; height: 1.6rem; }
+  .scale .rule { width: 160px; }
+  .scale .rule i {
+    display: block; height: 7px; margin-bottom: .3rem; border: 1px solid var(--chalk-dim);
+    background: linear-gradient(90deg, var(--chalk-dim) 0 25%, transparent 25% 50%, var(--chalk-dim) 50% 75%, transparent 75%);
   }
+  .scale .rule span { display: flex; justify-content: space-between; }
+  .hint { margin: .7rem 0 0; font: italic 400 1.05rem "Alegreya", serif; }
 
   /* ---- the pages below ------------------------------------------------------------------- */
   main { padding: 0 1rem; }
-  section { max-width: 62rem; margin: 0 auto; padding: 5rem 0 1rem; }
+  main > section { max-width: 68rem; margin: 0 auto; padding: 5rem 0 1rem; }
   h2 {
     font-weight: 500; font-size: clamp(1.9rem, 3.4vw, 2.5rem); line-height: 1.15;
     margin: 0 0 .6rem; color: var(--paper);
   }
-  .lead { max-width: var(--measure); color: var(--chalk-dim); margin: 0 0 2.5rem; }
+  .lead { max-width: var(--measure); color: var(--chalk-dim); margin: 0 0 1rem; }
 
-  .legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6rem 3rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); }
+  h3.group {
+    margin: 2.8rem 0 1.4rem; padding-bottom: .5rem; border-bottom: 1px solid var(--hatch);
+    font-size: 1.45rem; font-weight: 500; color: var(--paper);
+  }
+  .legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6rem 2.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18.5rem), 1fr)); }
   .legend li { display: grid; grid-template-columns: 2.5rem 1fr; gap: .9rem; align-items: start; }
   .legend img { width: 2.5rem; height: 2.5rem; image-rendering: pixelated; margin-top: .15rem; }
-  .legend h3 { margin: 0; font-size: 1.2rem; font-weight: 700; color: var(--paper); }
-  .legend p { margin: .15rem 0 0; color: var(--chalk-dim); line-height: 1.5; }
+  .legend h4 { margin: 0; font-size: 1.2rem; line-height: 1.3; font-weight: 700; color: var(--paper); }
+  .legend h4 a { color: inherit; text-decoration-color: var(--hatch); text-decoration-thickness: 2px; }
+  .legend h4 a:hover { color: var(--paper); text-decoration-color: var(--ochre); }
+  .legend p { margin: .25rem 0 0; color: var(--chalk-dim); font-size: 1.0625rem; line-height: 1.5; }
 
-  h3.group { margin: 3.2rem 0 1.4rem; font-size: 1.45rem; font-weight: 500; color: var(--paper); }
-  .shots { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+  .shots { display: grid; gap: 1.75rem 1.5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.5rem; }
   figure { margin: 0; }
-  figure img { width: 100%; height: auto; display: block; border: 1px solid var(--hatch);
-    image-rendering: auto; background: #111; }
+  .zoom { display: block; width: 100%; padding: 0; border: 1px solid var(--hatch); background: #111; cursor: zoom-in; }
+  .zoom:hover { border-color: var(--chalk-dim); }
+  .zoom img { width: 100%; height: auto; display: block; }
   figcaption { margin-top: .55rem; font-style: italic; color: var(--chalk-dim); font-size: 1.02rem; line-height: 1.45; }
-  .shots figure:first-child { grid-column: 1 / -1; }
 
-  .start { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 17rem); gap: 2rem 3rem; align-items: start; }
-  .start img { width: 100%; height: auto; image-rendering: pixelated; filter: drop-shadow(0 14px 18px rgba(0,0,0,.45)); }
-  @media (max-width: 760px) { .start { grid-template-columns: 1fr; } .start img { max-width: 14rem; justify-self: center; order: -1; } }
+  dialog.viewer {
+    width: min(96vw, 72rem); max-height: 96vh; padding: 0; border: 1px solid var(--hatch);
+    background: var(--fog-deep); color: var(--chalk);
+  }
+  dialog.viewer::backdrop { background: rgba(10,14,13,.85); }
+  dialog.viewer img { display: block; width: 100%; height: auto; max-height: 80vh; object-fit: contain; background: #111; image-rendering: pixelated; }
+  dialog.viewer p { margin: 0; padding: .8rem 4.5rem .9rem 1.1rem; font-style: italic; font-size: 1.05rem; line-height: 1.45; }
+  dialog.viewer form { position: absolute; right: .6rem; bottom: .6rem; }
+  dialog.viewer button {
+    font: 500 .95rem var(--sans); color: var(--chalk); background: var(--fog);
+    border: 1px solid var(--hatch); border-radius: 3px; padding: .4rem .7rem; cursor: pointer;
+  }
+
+  .start { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 17rem); gap: 2rem 3rem; align-items: start; margin-top: 1.5rem; }
+  .start > img { width: 100%; height: auto; image-rendering: pixelated; filter: drop-shadow(0 14px 18px rgba(0,0,0,.45)); }
   .steps { list-style: none; counter-reset: step; margin: 0; padding: 0; max-width: var(--measure); }
   .steps li { counter-increment: step; position: relative; padding: 0 0 1.4rem 3.2rem; }
   .steps li::before {
     content: counter(step); position: absolute; left: 0; top: -.1rem;
     width: 2.1rem; height: 2.1rem; display: grid; place-items: center;
-    font: 700 1.05rem "Alegreya Sans", sans-serif; color: var(--ink);
+    font: 700 1.05rem var(--sans); color: var(--ink);
     background: var(--lichen); border-radius: 50%;
   }
   .steps h3 { margin: 0; font-size: 1.2rem; color: var(--paper); }
@@ -149,30 +205,60 @@
   .needs { max-width: var(--measure); margin-top: 1.4rem; padding: 1rem 1.2rem;
     border-left: 3px solid var(--ochre); background: rgba(38,48,47,.6); color: var(--chalk-dim); }
   .needs strong { color: var(--paper); font-weight: 500; }
+  .start .cta { margin-top: 2rem; max-width: var(--measure); }
+  .start .cta .note { color: var(--chalk-dim); }
 
-  footer { max-width: 62rem; margin: 5rem auto 0; padding: 2rem 1rem 3rem; border-top: 1px solid var(--hatch);
+  footer { max-width: 68rem; margin: 5rem auto 0; padding: 2rem 1rem 3rem; border-top: 1px solid var(--hatch);
     color: var(--chalk-dim); font-size: 1rem; line-height: 1.55; }
   footer p { margin: 0 0 .6rem; max-width: var(--measure); }
+  footer ul { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem 1.6rem; }
 
+  @media (max-width: 860px) {
+    .links a:not(.keep) { display: none; }
+  }
+  @media (max-width: 760px) {
+    .start { grid-template-columns: 1fr; }
+    .start > img { max-width: 14rem; justify-self: center; order: -1; }
+  }
   @media (max-width: 640px) {
     body { font-size: 1.0625rem; }
-    .survey { height: 88vh; min-height: 30rem; }
+    .bar { padding: 0 .75rem; gap: .5rem; }
+    .bar .brand { display: none; }
+    .survey { min-height: 30rem; }
+    .reckoning { left: .75rem; }
     .cartouche { padding: 1.3rem 1.3rem 1.2rem; outline-offset: -9px; }
     .cartouche p { font-size: 1.05rem; }
-    .hint { display: none; }
-    section { padding-top: 3.5rem; }
+    .margin { display: none; }
+    main > section { padding-top: 3.5rem; }
+    .shots { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+    .bar, .bar .brand, .bar .download { transition: background-color .2s, opacity .2s, visibility .2s; }
   }
 </style>
 </head>
 <body>
-<header class="survey" id="survey">
-  <canvas id="map" aria-hidden="true"></canvas>
-  <div class="reckoning" id="reckoning" aria-hidden="true">~ 0, 0 (±0 м)<small>по ориентиру</small></div>
+<a class="skip" href="#inside"><span class="ru">К содержанию</span><span class="en">Skip to the content</span></a>
+<nav class="bar" id="bar" aria-label="Разделы / Sections">
+  <a class="brand" href="#survey">Terra: Incognita</a>
+  <div class="links">
+    <a href="#inside"><span class="ru">Что внутри</span><span class="en">What is inside</span></a>
+    <a href="#seen"><span class="ru">Кадры</span><span class="en">Screenshots</span></a>
+    <a href="#start"><span class="ru">Как начать</span><span class="en">How to start</span></a>
+    <a class="keep" href="wiki.html"><span class="ru">Справочник</span><span class="en">Handbook</span></a>
+  </div>
+  <a class="download" data-download href="https://github.com/denfry/terra-incognita-releases/releases?q=launcher&amp;expanded=true">
+    <span class="ru">Скачать</span><span class="en">Download</span></a>
   <div class="langs" role="group" aria-label="Язык / Language">
-    <a href="wiki.html"><span class="ru">Справочник</span><span class="en">Handbook</span></a>
     <button type="button" data-set-lang="ru" aria-pressed="true">RU</button>
     <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
   </div>
+</nav>
+
+<header class="survey" id="survey">
+  <canvas id="map" aria-hidden="true"></canvas>
+  <div class="reckoning" id="reckoning" aria-hidden="true">~ 0, 0 (±0 м)<small>по ориентиру</small></div>
   <div class="cartouche">
     <h1>Terra: Incognita</h1>
     <p class="ru">Выживание на TerraFirmaCraft, где мир нужно исследовать, а не открывать по списку.
@@ -180,77 +266,93 @@
     <p class="en">A TerraFirmaCraft survival pack where the world is something you investigate, not a list you unlock.
       Species stay nameless until you identify them, and your map shows only what you measured yourself.</p>
     <div class="cta">
-      <a class="download" id="download" href="https://github.com/denfry/terra-incognita-releases/releases?q=launcher&amp;expanded=true">
+      <a class="download" data-download href="https://github.com/denfry/terra-incognita-releases/releases?q=launcher&amp;expanded=true">
         <span class="ru">Скачать Terra Launcher</span><span class="en">Download Terra Launcher</span></a>
-      <span class="note" id="download-note"><span class="ru">Windows 10 или 11, 64 бита</span><span class="en">Windows 10 or 11, 64-bit</span></span>
+      <span class="note" data-download-note><span class="ru">Windows 10 или 11, 64 бита</span><span class="en">Windows 10 or 11, 64-bit</span></span>
     </div>
   </div>
-  <p class="hint"><span class="ru">Ведите курсором: местность проявляется там, где вы прошли</span><span class="en">Move the pointer: the land appears where you have been</span></p>
+  <div class="margin" aria-hidden="true">
+    <div class="scale">
+      <svg viewBox="0 0 16 26"><path d="M8 1 14 25 8 19 2 25Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 1 8 19 2 25Z" fill="currentColor"/></svg>
+      <div class="rule"><i></i><span><b>0</b><b><span class="ru">80 м</span><span class="en">80 m</span></b></span></div>
+    </div>
+    <p class="hint"><span class="ru">Ведите курсором: местность проявляется там, где вы прошли</span><span class="en">Move the pointer: the land appears where you have been</span></p>
+  </div>
 </header>
 
 <main>
   <section aria-labelledby="inside">
     <h2 id="inside"><span class="ru">Что вас ждёт</span><span class="en">What you will find</span></h2>
-    <p class="lead"><span class="ru">Сборка для Minecraft 1.21.1 на NeoForge: TerraFirmaCraft и восемнадцать собственных модулей, которые связывают природу, знание и людей в одну систему. Как всё устроено в подробностях, рассказывает <a href="wiki.html">справочник</a>.</span><span class="en">A Minecraft 1.21.1 pack on NeoForge: TerraFirmaCraft and eighteen modules of our own that tie nature, knowledge and people into one system. The <a href="wiki.html">handbook</a> explains how it all works in detail.</span></p>
+    <p class="lead"><span class="ru">Сборка для Minecraft 1.21.1 на NeoForge: TerraFirmaCraft и восемнадцать собственных модулей, которые связывают природу, знание и людей в одну систему. Заголовки ведут в <a href="wiki.html">справочник</a>, где каждая механика разобрана подробно.</span><span class="en">A Minecraft 1.21.1 pack on NeoForge: TerraFirmaCraft and eighteen modules of our own that tie nature, knowledge and people into one system. The headings lead to the <a href="wiki.html">handbook</a>, which explains each mechanic in detail.</span></p>
+
+    <h3 class="group"><span class="ru">Исследование и знание</span><span class="en">Survey and knowledge</span></h3>
     <ul class="legend">
-      <li><img src="assets/atlas/icon-species_record.png" alt="">
-        <div><h3><span class="ru">Безымянные виды</span><span class="en">Nameless species</span></h3>
+      <li><img src="assets/atlas/icon-species_record.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#species"><span class="ru">Безымянные виды</span><span class="en">Nameless species</span></a></h4>
         <p class="ru">Растения и звери поначалу неизвестны. Вы наблюдаете, берёте образец и определяете его в лаборатории, а первый, кто внесёт вид в реестр Общества, остаётся в его истории.</p>
         <p class="en">Plants and animals start out unknown. You observe, take a specimen and identify it at a bench, and whoever enters a species in the Society's register first stays in its history.</p></div></li>
-      <li><img src="assets/atlas/icon-triangulation_point.png" alt="">
-        <div><h3><span class="ru">Карта из собственной съёмки</span><span class="en">Maps from your own survey</span></h3>
+      <li><img src="assets/atlas/icon-triangulation_point.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#maps"><span class="ru">Карта из собственной съёмки</span><span class="en">Maps from your own survey</span></a></h4>
         <p class="ru">Никакой миникарты. Лист рисуется за чертёжным столом из того, что вы прошли и измерили компасом, теодолитом, буссолью. Реки получают имена тех, кто их нанёс.</p>
         <p class="en">No minimap. A sheet is drawn at a drawing table from what you walked and measured with compass, theodolite and surveying compass. Rivers take the names of those who charted them.</p></div></li>
-      <li><img src="assets/atlas/icon-outcrop.png" alt="">
-        <div><h3><span class="ru">Земля, которая помнит</span><span class="en">Ground that remembers</span></h3>
-        <p class="ru">Почва помнит, что с ней делали. Леса растут, горят от молний в засуху и зарастают по порядку. Весной реки разливаются и оставляют на пойме ил.</p>
-        <p class="en">Soil remembers what was done to it. Forests grow, burn in dry-season lightning and come back in order. Rivers flood in spring and leave silt on their plains.</p></div></li>
-      <li><img src="assets/atlas/icon-settlement.png" alt="">
-        <div><h3><span class="ru">Города игроков</span><span class="en">Players' towns</span></h3>
-        <p class="ru">Ратуша, грамоты, казна и сбор с граждан. Свой монетный двор чеканит серебро с гербом города, на площади идёт торговля, по дорогам ходят караваны.</p>
-        <p class="en">A town hall, charters, a treasury and a levy on citizens. Your own mint strikes silver with the town's arms, the square trades, and caravans travel the roads.</p></div></li>
-      <li><img src="assets/atlas/icon-danger.png" alt="">
-        <div><h3><span class="ru">Война по правилам</span><span class="en">War with rules</span></h3>
-        <p class="ru">Ультиматум, окно войны и реликвия вместо разорения. Вассалы платят дань и поднимают восстания; архив врага можно вскрыть ради копий, но не сжечь.</p>
-        <p class="en">An ultimatum, a war window and a relic instead of griefing. Vassals pay tribute and rise; an enemy archive can be raided for copies, never burned.</p></div></li>
-      <li><img src="assets/atlas/icon-sample_site.png" alt="">
-        <div><h3><span class="ru">Наука вместо очков</span><span class="en">Science, not points</span></h3>
+      <li><img src="assets/atlas/icon-sample_site.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#science"><span class="ru">Наука вместо очков</span><span class="en">Science, not points</span></a></h4>
         <p class="ru">Гипотезы с интервалами, долгие ряды наблюдений, телескоп и альманах. Знание живёт в книгах и библиотеках, его можно скопировать и потерять.</p>
         <p class="en">Hypotheses with intervals, long observation series, a telescope and an almanac. Knowledge lives in books and libraries; it can be copied and it can be lost.</p></div></li>
-      <li><img src="assets/atlas/icon-case.png" alt="">
-        <div><h3><span class="ru">Раны и болезни</span><span class="en">Wounds and illness</span></h3>
-        <p class="ru">Переломы, заражение, дизентерия от грязной воды. Грязная рана видна на теле, а лекарь записывает в тетрадь, что дал и чем кончилось.</p>
-        <p class="en">Fractures, infection, dysentery from foul water. A dirty wound shows on the body, and a healer writes down what was given and how it ended.</p></div></li>
-      <li><img src="assets/atlas/icon-ford.png" alt="">
-        <div><h3><span class="ru">Моря и реки</span><span class="en">Seas and rivers</span></h3>
+    </ul>
+
+    <h3 class="group"><span class="ru">Мир и тело</span><span class="en">The land and the body</span></h3>
+    <ul class="legend">
+      <li><img src="assets/atlas/icon-outcrop.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#nature"><span class="ru">Земля, которая помнит</span><span class="en">Ground that remembers</span></a></h4>
+        <p class="ru">Почва помнит, что с ней делали. Леса растут, горят от молний в засуху и зарастают по порядку. Весной реки разливаются и оставляют на пойме ил.</p>
+        <p class="en">Soil remembers what was done to it. Forests grow, burn in dry-season lightning and come back in order. Rivers flood in spring and leave silt on their plains.</p></div></li>
+      <li><img src="assets/atlas/icon-ford.png" width="16" height="16" alt="">
+        <div><h4><span class="ru">Моря и реки</span><span class="en">Seas and rivers</span></h4>
         <p class="ru">Броды и пороги, пресная рыба в реках, давление и кессонная болезнь в глубине, водолазный шлем и батисфера на лебёдке.</p>
         <p class="en">Fords and rapids, freshwater fish in rivers, pressure and the bends in the deep, a diving helmet and a bathysphere on a winch.</p></div></li>
+      <li><img src="assets/atlas/icon-case.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#health"><span class="ru">Раны и болезни</span><span class="en">Wounds and illness</span></a></h4>
+        <p class="ru">Переломы, заражение, дизентерия от грязной воды. Грязная рана видна на теле, а лекарь записывает в тетрадь, что дал и чем кончилось.</p>
+        <p class="en">Fractures, infection, dysentery from foul water. A dirty wound shows on the body, and a healer writes down what was given and how it ended.</p></div></li>
+    </ul>
+
+    <h3 class="group"><span class="ru">Города и война</span><span class="en">Towns and war</span></h3>
+    <ul class="legend">
+      <li><img src="assets/atlas/icon-settlement.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#towns"><span class="ru">Города игроков</span><span class="en">Players' towns</span></a></h4>
+        <p class="ru">Ратуша, грамоты, казна и сбор с граждан. Свой монетный двор чеканит серебро с гербом города, на площади идёт торговля, по дорогам ходят караваны.</p>
+        <p class="en">A town hall, charters, a treasury and a levy on citizens. Your own mint strikes silver with the town's arms, the square trades, and caravans travel the roads.</p></div></li>
+      <li><img src="assets/atlas/icon-danger.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#war"><span class="ru">Война по правилам</span><span class="en">War with rules</span></a></h4>
+        <p class="ru">Ультиматум, окно войны и реликвия вместо разорения. Вассалы платят дань и поднимают восстания; архив врага можно вскрыть ради копий, но не сжечь.</p>
+        <p class="en">An ultimatum, a war window and a relic instead of griefing. Vassals pay tribute and rise; an enemy archive can be raided for copies, never burned.</p></div></li>
     </ul>
 
     <h3 class="group"><span class="ru">Хозяйство и быт</span><span class="en">Farm, kitchen and workshop</span></h3>
     <ul class="legend">
-      <li><img src="assets/atlas/icon-soil_pit.png" alt="">
-        <div><h3><span class="ru">Сельское хозяйство</span><span class="en">Farming</span></h3>
+      <li><img src="assets/atlas/icon-soil_pit.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#farming"><span class="ru">Сельское хозяйство</span><span class="en">Farming</span></a></h4>
         <p class="ru">Урожай растёт от тепла, а не по таймеру: холодное лето оставит поле зелёным к заморозкам. Почва считается по закону минимума, поле помнит, что на нём росло, а болезни и вредители приходят к тем, кто сеет одно и то же год за годом.</p>
         <p class="en">Crops grow on warmth, not a timer: a cold summer leaves a field green when the frosts come. Soil follows the law of the minimum, a field remembers what grew on it, and disease and pests find those who sow the same thing year after year.</p></div></li>
-      <li><img src="assets/atlas/icon-resource.png" alt="">
-        <div><h3><span class="ru">Скот и наследственность</span><span class="en">Livestock and breeding</span></h3>
+      <li><img src="assets/atlas/icon-resource.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#livestock"><span class="ru">Скот и наследственность</span><span class="en">Livestock and breeding</span></a></h4>
         <p class="ru">У каждого животного свой запас сил: худая корова даёт меньше молока и хуже телится. Признаки передаются потомству, пастбище выедается, а в хлеву и конюшне скот держится лучше.</p>
         <p class="en">Every animal runs on an energy budget: a thin cow gives less milk and calves badly. Traits pass to offspring, pasture gets grazed down, and a barn or stable keeps stock better.</p></div></li>
-      <li><img src="assets/atlas/item-ladle.png" alt="">
-        <div><h3><span class="ru">Кухня и запасы</span><span class="en">Cooking and stores</span></h3>
+      <li><img src="assets/atlas/item-ladle.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#cooking"><span class="ru">Кухня и запасы</span><span class="en">Cooking and stores</span></a></h4>
         <p class="ru">Медный котёл на треноге над костром: что положите, то и сварите, и качество блюда зависит от продуктов. Соление в горшках, вяление на верёвке, а без свежей еды зимой подступает цинга.</p>
         <p class="en">A copper cauldron on a tripod over the firepit: what goes in decides what comes out, and ingredients set the dish's quality. Crocks for pickling, lines for drying, and scurvy for a winter without fresh food.</p></div></li>
-      <li><img src="assets/atlas/block-trunk-top.png" alt="">
-        <div><h3><span class="ru">Лес и древесина</span><span class="en">Timber</span></h3>
+      <li><img src="assets/atlas/block-trunk-top.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#timber"><span class="ru">Лес и древесина</span><span class="en">Timber</span></a></h4>
         <p class="ru">Дерево валят с запилом, и оно падает туда, куда его направили. Сырое бревно сохнет неделями; сырые дрова горят холоднее, а уголь из них выходит хуже.</p>
         <p class="en">A tree is felled with a notch and falls where you aimed it. A green log seasons for weeks; green firewood burns cooler and makes poorer charcoal.</p></div></li>
-      <li><img src="assets/atlas/icon-building.png" alt="">
-        <div><h3><span class="ru">Здания, которые работают</span><span class="en">Buildings that work</span></h3>
+      <li><img src="assets/atlas/icon-building.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#buildings"><span class="ru">Здания, которые работают</span><span class="en">Buildings that work</span></a></h4>
         <p class="ru">Нет готовых мультиблоков. Ядро здания измеряет комнату и признаёт библиотеку, трактир, теплицу или амбар, только если они устроены как надо, и тогда здание даёт свою пользу.</p>
         <p class="en">No fixed multiblocks. A building's core measures the room and recognises a library, an inn, a greenhouse or a barn only when it is built like one, and then the building does its job.</p></div></li>
-      <li><img src="assets/atlas/icon-port.png" alt="">
-        <div><h3><span class="ru">Механика и транспорт</span><span class="en">Machines and travel</span></h3>
+      <li><img src="assets/atlas/icon-port.png" width="16" height="16" alt="">
+        <div><h4><a href="wiki.html#machines"><span class="ru">Механика и транспорт</span><span class="en">Machines and travel</span></a></h4>
         <p class="ru">Create с дополнениями, поезда, парусники и самолёты, но всё на металлах TerraFirmaCraft: сначала нужно добыть и выплавить, потом строить.</p>
         <p class="en">Create and its addons, trains, sailing ships and aircraft, all built on TerraFirmaCraft's metals: first you mine and smelt, then you build.</p></div></li>
     </ul>
@@ -258,15 +360,15 @@
 
   <section aria-labelledby="seen">
     <h2 id="seen"><span class="ru">Как это выглядит</span><span class="en">What it looks like</span></h2>
-    <p class="lead"><span class="ru">Кадры из собранной сборки, без правок.</span><span class="en">Frames from the assembled pack, untouched.</span></p>
+    <p class="lead"><span class="ru">Кадры из собранной сборки, без правок. Нажмите на кадр, чтобы рассмотреть его.</span><span class="en">Frames from the assembled pack, untouched. Press a frame to look closer.</span></p>
     <div class="shots">
-      <figure><img src="assets/shots/meadow.jpg" width="854" height="480" loading="lazy" alt="Луг в первый день: цветущий кипрей, в руке книга, в углу координаты по счислению">
+      <figure><button type="button" class="zoom"><img src="assets/shots/meadow.jpg" width="854" height="480" alt="Луг в первый день: цветущий кипрей, в руке книга, в углу координаты по счислению"></button>
         <figcaption><span class="ru">Первый день. Координаты в углу не точные, а по счислению: вы знаете, где вы, ровно настолько, насколько считали шаги.</span><span class="en">Day one. The coordinates in the corner are dead reckoning: you know where you are only as well as you counted your steps.</span></figcaption></figure>
-      <figure><img src="assets/shots/drawing-table.jpg" width="854" height="480" loading="lazy" alt="Чертёжный стол в мастерской и сообщение о начерченной полевой карте">
+      <figure><button type="button" class="zoom"><img src="assets/shots/drawing-table.jpg" width="854" height="480" loading="lazy" alt="Чертёжный стол в мастерской и сообщение о начерченной полевой карте"></button>
         <figcaption><span class="ru">Чертёжный стол: полевая карта с покрытием в один процент. Остальное ещё предстоит обойти.</span><span class="en">The drawing table: a field map at one per cent coverage. The rest is still to be walked.</span></figcaption></figure>
-      <figure><img src="assets/shots/atlas.jpg" width="640" height="480" loading="lazy" alt="Атлас: своя съёмка, роза севера, вкладки масштабов">
+      <figure><button type="button" class="zoom"><img src="assets/shots/atlas.jpg" width="640" height="480" loading="lazy" alt="Атлас: своя съёмка, роза севера, вкладки масштабов"></button>
         <figcaption><span class="ru">Атлас: только то, что вы сами видели, с розой севера и точностью съёмки.</span><span class="en">The atlas: only what you have seen, with a north rose and the survey's accuracy.</span></figcaption></figure>
-      <figure><img src="assets/shots/town.jpg" width="640" height="480" loading="lazy" alt="Страница города: глава, казна, сбор с граждан, кнопки вкладок">
+      <figure><button type="button" class="zoom"><img src="assets/shots/town.jpg" width="640" height="480" loading="lazy" alt="Страница города: глава, казна, сбор с граждан, кнопки вкладок"></button>
         <figcaption><span class="ru">Страница города: грамоты, казна, налоги и сбор с граждан, всё на месте в ратуше.</span><span class="en">A town's page: charters, the treasury, the market tax and the citizens' levy, read at the town hall.</span></figcaption></figure>
     </div>
   </section>
@@ -285,6 +387,11 @@
         <p><span class="ru">Первый запуск скачает около полутора гигабайт. В игре вы получите «Полевые заметки» и четыре книги, которые объясняют первые дни.</span><span class="en">The first start downloads about 1.5 GB. In game you get the Field Notes and four primers that explain the first days.</span></p></li>
     </ol>
     <div class="needs"><span class="ru"><strong>Что нужно:</strong> Windows 10 или 11, 64 бита; 8 ГБ памяти (игре отдаётся 6 ГБ); около 4 ГБ на диске. Вход через Microsoft появится в одной из следующих версий лаунчера, пока игра идёт под введённым именем.</span><span class="en"><strong>You need:</strong> Windows 10 or 11, 64-bit; 8 GB of memory (the game gets 6 GB); about 4 GB of disk. Microsoft sign-in arrives in a later launcher version; for now you play under the name you type.</span></div>
+    <div class="cta">
+      <a class="download" data-download href="https://github.com/denfry/terra-incognita-releases/releases?q=launcher&amp;expanded=true">
+        <span class="ru">Скачать Terra Launcher</span><span class="en">Download Terra Launcher</span></a>
+      <span class="note"><span class="ru">Другие способы установки описаны <a href="wiki.html#start">в справочнике</a></span><span class="en">Other ways to install are <a href="wiki.html#start">in the handbook</a></span></span>
+    </div>
     </div>
     <img src="assets/drawing-table.png" width="560" height="558" loading="lazy" alt="Чертёжный стол из сборки: на столешнице карта с рекой, линейка и чернильница">
     </div>
@@ -292,10 +399,20 @@
 </main>
 
 <footer>
-  <p><span class="ru">Terra: Incognita, версия 1.0.0-rc.2, кандидат в релиз. Minecraft 1.21.1, NeoForge 21.1.249, TerraFirmaCraft 4.2.9.</span><span class="en">Terra: Incognita, version 1.0.0-rc.2, release candidate. Minecraft 1.21.1, NeoForge 21.1.249, TerraFirmaCraft 4.2.9.</span></p>
+  <p><span class="ru">Terra: Incognita, версия <span data-version>1.0.0-rc.2</span>. Minecraft 1.21.1, NeoForge 21.1.249, TerraFirmaCraft 4.2.9.</span><span class="en">Terra: Incognita, version <span data-version>1.0.0-rc.2</span>. Minecraft 1.21.1, NeoForge 21.1.249, TerraFirmaCraft 4.2.9.</span></p>
   <p><span class="ru">Сборка стоит на плечах TerraFirmaCraft и полутора сотен других модов; их авторы и лицензии перечислены в книге «Благодарности» на титульном экране игры.</span><span class="en">The pack stands on TerraFirmaCraft and some 150 other mods; their authors and licences are listed under Credits on the game's title screen.</span></p>
-  <p><a href="wiki.html"><span class="ru">Справочник</span><span class="en">Handbook</span></a> · <a href="https://github.com/denfry/terra-incognita-releases/releases"><span class="ru">Все релизы</span><span class="en">All releases</span></a></p>
+  <ul>
+    <li><a href="wiki.html"><span class="ru">Справочник</span><span class="en">Handbook</span></a></li>
+    <li><a href="https://github.com/denfry/terra-incognita-releases/releases"><span class="ru">Все релизы</span><span class="en">All releases</span></a></li>
+    <li><a href="https://github.com/denfry/terra-incognita-releases/issues"><span class="ru">Сообщить об ошибке</span><span class="en">Report a problem</span></a></li>
+  </ul>
 </footer>
+
+<dialog class="viewer" id="viewer">
+  <img id="viewer-image" alt="">
+  <p id="viewer-caption"></p>
+  <form method="dialog"><button><span class="ru">Закрыть</span><span class="en">Close</span></button></form>
+</dialog>
 
 <script>
 (() => {
@@ -323,22 +440,45 @@
       const launcher = releases.find((r) => /^launcher-v/.test(r.tag_name) && !r.prerelease && !r.draft);
       if (!launcher) return;
       const exe = (launcher.assets || []).find((a) => /setup\.exe$/i.test(a.name));
-      if (exe) document.getElementById("download").href = exe.browser_download_url;
+      if (exe) document.querySelectorAll("[data-download]").forEach((a) => { a.href = exe.browser_download_url; });
       const version = launcher.tag_name.replace(/^launcher-v/, "");
       const mb = exe ? Math.round(exe.size / 1048576) : null;
-      document.getElementById("download-note").innerHTML =
+      document.querySelector("[data-download-note]").innerHTML =
         `<span class="ru">Версия ${version}${mb ? `, ${mb} МБ` : ""}. Windows 10 или 11, 64 бита</span>` +
         `<span class="en">Version ${version}${mb ? `, ${mb} MB` : ""}. Windows 10 or 11, 64-bit</span>`;
     })
-    .catch(() => { /* the button already points at the releases page */ });
+    .catch(() => { /* the buttons already point at the releases page */ });
+
+  // ---- the bar turns solid once the map has scrolled away -----------------------------------
+  const survey = document.getElementById("survey");
+  const bar = document.getElementById("bar");
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(([e]) => bar.classList.toggle("stuck", !e.isIntersecting), { rootMargin: "-64px 0px 0px 0px" }).observe(survey);
+  } else {
+    bar.classList.add("stuck");
+  }
+
+  // ---- a frame, looked at closely -----------------------------------------------------------
+  const viewer = document.getElementById("viewer");
+  if (typeof viewer.showModal === "function") {
+    document.querySelectorAll(".zoom").forEach((button) => button.addEventListener("click", () => {
+      const img = button.querySelector("img");
+      const shown = document.getElementById("viewer-image");
+      shown.src = img.src; shown.alt = img.alt;
+      document.getElementById("viewer-caption").innerHTML = button.closest("figure").querySelector("figcaption").innerHTML;
+      viewer.showModal();
+    }));
+    viewer.addEventListener("click", (e) => { if (e.target === viewer || e.target.tagName === "IMG") viewer.close(); });
+  } else {
+    document.querySelectorAll(".zoom").forEach((button) => { button.style.cursor = "auto"; });
+  }
 
   // ---- the map under the fog ----------------------------------------------------------------
-  const survey = document.getElementById("survey");
   const canvas = document.getElementById("map");
   const ctx = canvas.getContext("2d");
   const reckoning = document.getElementById("reckoning");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const TILE = 32, BLOCKS_PER_TILE = 16;
+  const TILE = 32, BLOCKS_PER_TILE = 16, GRID = 4;
   const names = ["grass", "water", "rock", "sand", "marsh", "clay", "snow"];
   const images = {};
   const load = (key, src) => new Promise((ok) => { const i = new Image(); i.onload = () => { images[key] = i; ok(); }; i.onerror = ok; i.src = src; });
@@ -360,12 +500,15 @@
   };
   const fbm = (x, y, s) => noise(x, y, s) * 0.55 + noise(x * 2.1, y * 2.1, s + 7) * 0.3 + noise(x * 4.3, y * 4.3, s + 13) * 0.15;
 
-  let cols = 0, rows = 0, dpr = 1, land = [], marks = [], river = [], fog, fogCtx, origin = { x: 0, y: 0 };
+  let cols = 0, rows = 0, dpr = 1, land = [], marks = [], river = [], traverse = [], fog, fogCtx, origin = { x: 0, y: 0 };
   let last = null, drift = 0, readoutState = { x: 438, z: 118, err: 1, landmark: true };
+  let built = { w: 0, h: 0 };
+  const centre = (at) => ({ x: at[0] * TILE + TILE / 2, y: at[1] * TILE + TILE / 2 });
 
   function build() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = survey.clientWidth, h = survey.clientHeight;
+    built = { w, h };
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     cols = Math.ceil(w / TILE) + 1; rows = Math.ceil(h / TILE) + 1;
     origin = { x: Math.floor(cols * 0.62), y: Math.floor(rows * 0.42) };
@@ -398,18 +541,22 @@
     }
     const pick = (fx, fy) => [Math.max(1, Math.min(cols - 2, Math.round(cols * fx))), Math.max(1, Math.min(rows - 2, Math.round(rows * fy)))];
     const ford = river[Math.floor(rows * 0.55)] || [cols - 3, rows - 3];
+    const town = [Math.max(1, ford[0] - 3), ford[1]];
+    const signpost = pick(0.55, 0.52);
     marks = [
       { icon: "camp", at: [origin.x, origin.y] },
-      { icon: "settlement", at: [Math.max(1, ford[0] - 3), ford[1]], label: "Проверочный" },
+      { icon: "settlement", at: town, label: { ru: "Проверочный", en: "Proverochny" } },
       { icon: "ford", at: ford },
       { icon: "peak", at: pick(0.9, 0.12) },
       { icon: "waterfall", at: river[Math.floor(rows * 0.25)] || pick(0.8, 0.25) },
       { icon: "well", at: pick(0.44, 0.7) },
-      { icon: "signpost", at: pick(0.55, 0.52) },
+      { icon: "signpost", at: signpost },
       { icon: "species_record", at: pick(0.3, 0.35) },
       { icon: "mineral_discovery", at: pick(0.72, 0.8) },
       { icon: "outcrop", at: pick(0.2, 0.62) },
     ];
+    // The first day's traverse: out of camp, by the signpost, through the town to the ford.
+    traverse = [[origin.x, origin.y], signpost, town, ford].map(centre);
     fog = document.createElement("canvas");
     fog.width = canvas.width; fog.height = canvas.height;
     fogCtx = fog.getContext("2d");
@@ -434,7 +581,18 @@
     fogCtx.globalCompositeOperation = "source-over";
   }
 
+  function lettering(text, x, y, font, colour) {
+    ctx.font = font;
+    ctx.fillStyle = colour;
+    ctx.strokeStyle = "rgba(230, 220, 195, 0.9)";
+    ctx.lineWidth = 4;
+    ctx.lineJoin = "round";
+    ctx.strokeText(text, x, y);
+    ctx.fillText(text, x, y);
+  }
+
   function draw() {
+    const lang = root.dataset.lang === "en" ? "en" : "ru";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = "#e6dcc3";
@@ -446,20 +604,35 @@
       if (t.cover && images["cover-" + t.cover]) ctx.drawImage(images["cover-" + t.cover], x * TILE, y * TILE, TILE, TILE);
       if (t.relief && images["relief-" + t.relief]) ctx.drawImage(images["relief-" + t.relief], x * TILE, y * TILE, TILE, TILE);
     }
+    // The sheet's grid, every 64 blocks, counted from camp.
+    ctx.strokeStyle = "rgba(31, 26, 20, 0.14)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let x = origin.x % GRID; x <= cols; x += GRID) { ctx.moveTo(x * TILE + 0.5, 0); ctx.lineTo(x * TILE + 0.5, rows * TILE); }
+    for (let y = origin.y % GRID; y <= rows; y += GRID) { ctx.moveTo(0, y * TILE + 0.5); ctx.lineTo(cols * TILE, y * TILE + 0.5); }
+    ctx.stroke();
+    // The traverse, station to station.
+    ctx.strokeStyle = "rgba(31, 26, 20, 0.75)";
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([7, 5]);
+    ctx.beginPath();
+    traverse.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
+    ctx.stroke();
+    ctx.setLineDash([]);
     // The river's name, lettered in italic as the atlas letters it.
     const bend = river[Math.floor(rows * 0.4)];
     if (bend) {
-      ctx.font = "italic 500 17px Alegreya, Georgia, serif";
-      ctx.fillStyle = "#2c5a8a";
-      ctx.strokeStyle = "rgba(230, 220, 195, 0.9)";
-      ctx.lineWidth = 4;
-      const label = root.dataset.lang === "en" ? "the Ryzhaya" : "р. Рыжая";
-      ctx.strokeText(label, bend[0] * TILE + TILE + 4, bend[1] * TILE + 20);
-      ctx.fillText(label, bend[0] * TILE + TILE + 4, bend[1] * TILE + 20);
+      lettering(lang === "en" ? "the Ryzhaya" : "р. Рыжая", bend[0] * TILE + TILE + 4, bend[1] * TILE + 20,
+        "italic 500 17px Alegreya, Georgia, serif", "#2c5a8a");
     }
     for (const m of marks) {
       const i = images["icon-" + m.icon];
       if (i) ctx.drawImage(i, m.at[0] * TILE, m.at[1] * TILE, TILE, TILE);
+      if (m.label) {
+        ctx.textAlign = "center";
+        lettering(m.label[lang], m.at[0] * TILE + TILE / 2, m.at[1] * TILE + TILE + 15, "500 16px Alegreya, Georgia, serif", "#1f1a14");
+        ctx.textAlign = "start";
+      }
     }
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.drawImage(fog, 0, 0);
@@ -495,31 +668,53 @@
     requestAnimationFrame(draw);
   }
 
-  survey.addEventListener("pointermove", (e) => { if (!e.target.closest(".cartouche, .langs")) onMove(e.clientX, e.clientY); });
-  survey.addEventListener("pointerdown", (e) => { if (!e.target.closest(".cartouche, .langs")) onMove(e.clientX, e.clientY); });
+  survey.addEventListener("pointermove", (e) => { if (!e.target.closest(".cartouche")) onMove(e.clientX, e.clientY); });
+  survey.addEventListener("pointerdown", (e) => { if (!e.target.closest(".cartouche")) onMove(e.clientX, e.clientY); });
 
-  // One orchestrated moment: the surveyor walks out of camp towards the river, then the page is yours.
-  function walkOut() {
-    const start = { x: origin.x * TILE + TILE / 2, y: origin.y * TILE + TILE / 2 };
-    const ford = marks.find((m) => m.icon === "ford");
-    const end = ford ? { x: ford.at[0] * TILE + TILE / 2, y: ford.at[1] * TILE + TILE / 2 } : start;
-    if (reduceMotion) { reveal(end.x, end.y, 90, 1); draw(); return; }
-    const t0 = performance.now(), duration = 1600;
+  // Where the surveyor is after walking a share of the traverse.
+  function along(share) {
+    const legs = traverse.slice(1).map((p, i) => Math.hypot(p.x - traverse[i].x, p.y - traverse[i].y));
+    let left = share * legs.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < legs.length; i++) {
+      if (left <= legs[i] || i === legs.length - 1) {
+        const t = legs[i] ? Math.min(1, left / legs[i]) : 0;
+        return { x: traverse[i].x + (traverse[i + 1].x - traverse[i].x) * t, y: traverse[i].y + (traverse[i + 1].y - traverse[i].y) * t };
+      }
+      left -= legs[i];
+    }
+    return traverse[0];
+  }
+
+  // One orchestrated moment: the surveyor walks the first day's traverse, then the page is yours.
+  function walkOut(instant) {
+    if (instant || reduceMotion) {
+      for (let s = 0; s <= 1; s += 0.04) { const p = along(s); reveal(p.x, p.y, 95, 0.9); }
+      draw();
+      return;
+    }
+    const t0 = performance.now(), duration = 2600;
     const step = (now) => {
       const t = Math.min(1, (now - t0) / duration), e = 1 - Math.pow(1 - t, 3);
-      const x = start.x + (end.x - start.x) * e, y = start.y + (end.y - start.y) * e + Math.sin(e * Math.PI) * -40;
-      reveal(x, y, 85, 0.9);
+      const p = along(e);
+      reveal(p.x, p.y, 95, 0.9);
       draw();
       if (t < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
   }
 
+  // A phone's address bar sliding away changes the height a little: that is not a new sheet.
   let resizeTimer = null;
-  window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { build(); draw(); }, 150); });
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (survey.clientWidth === built.w && Math.abs(survey.clientHeight - built.h) < 120) return;
+      build(); walkOut(true);
+    }, 150);
+  });
 
   setLang(initial);
-  Promise.all(loading).then(() => (document.fonts ? document.fonts.ready : null)).then(() => { build(); draw(); walkOut(); });
+  Promise.all(loading).then(() => (document.fonts ? document.fonts.ready : null)).then(() => { build(); draw(); walkOut(false); });
 })();
 </script>
 </body>
