@@ -2,6 +2,8 @@
 
 **English** · [Русский](#русский)
 
+[![Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/mVZcNUAGZt)
+
 This repository holds the files Terra Launcher downloads: the launcher installer, the signed
 release documents and the modpack's files. It has no source code.
 
