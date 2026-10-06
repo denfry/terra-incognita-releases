@@ -1,13 +1,14 @@
-# Terra: Incognita — releases
+# Terra: Incognita — Releases
 
-**English** · [Русский](#русский)
+Distribution repository for Terra Launcher and the Terra: Incognita modpack (closed source).
 
 [![Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/mVZcNUAGZt)
 
 This repository holds the files Terra Launcher downloads: the launcher installer, the signed
-release documents and the modpack's files. It has no source code.
+release documents and the modpack's files. It contains no source code, and the launcher and pack
+are not open source.
 
-## Play
+## Installation
 
 1. Download the newest `TerraLauncher-<version>-setup.exe` from
    [Releases](https://github.com/denfry/terra-incognita-releases/releases?q=launcher&expanded=true).
@@ -21,9 +22,13 @@ Microsoft sign-in is not available yet: the launcher plays under the name you ty
 works; a server lets such a player in only with `online-mode=false`. Sign-in arrives with a later
 launcher version, and installed launchers update themselves.
 
-Requirements: Windows 10/11 64-bit, 8 GB RAM (the game gets 6 GB), about 4 GB of disk.
+## Requirements
 
-## What is in here
+- Windows 10/11, 64-bit
+- 8 GB RAM (the game gets 6 GB)
+- About 4 GB of disk space
+
+## Repository contents
 
 | Where | What |
 |---|---|
@@ -35,25 +40,6 @@ Every file the launcher installs is named, with its hash, in a manifest signed b
 keys; the launcher trusts nothing else. Third-party mods keep their own licences; the launcher
 downloads the ones whose licence does not allow redistribution straight from their authors.
 
----
+## Community
 
-## Русский
-
-Здесь лежат файлы, которые скачивает Terra Launcher: установщик лаунчера, подписанные документы
-релиза и файлы сборки. Исходного кода тут нет.
-
-### Как играть
-
-1. Скачайте свежий `TerraLauncher-<версия>-setup.exe` из
-   [Releases](https://github.com/denfry/terra-incognita-releases/releases?q=launcher&expanded=true).
-2. Запустите его. Установщик пока не подписан сертификатом, поэтому Windows SmartScreen покажет
-   «Система Windows защитила ваш компьютер»: нажмите **Подробнее**, затем **Выполнить в любом
-   случае**. Файл `.sha256` рядом с установщиком позволяет проверить скачанное.
-3. Откройте Terra Launcher, впишите имя игрока, нажмите **PLAY**. Лаунчер сам поставит Java,
-   Minecraft, NeoForge и сборку (около 1,5 ГБ в первый раз) и запустит игру.
-
-Вход через Microsoft пока недоступен: лаунчер запускает игру под введённым именем. Одиночная игра
-работает; на сервер такого игрока пустит только `online-mode=false`. Вход появится в следующей
-версии лаунчера, установленные лаунчеры обновятся сами.
-
-Требования: Windows 10/11 64-bit, 8 ГБ ОЗУ (игре достаётся 6 ГБ), около 4 ГБ на диске.
+Questions and feedback: [Discord](https://discord.gg/mVZcNUAGZt).
